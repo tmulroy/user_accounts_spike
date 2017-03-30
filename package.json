@@ -1,0 +1,26 @@
+{
+  "name": "user_accounts_spike",
+  "version": "1.0.0",
+  "description": "built to learn about authentication",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmulroy/user_accounts_spike.git"
+  },
+  "keywords": [
+    "express",
+    "express-session",
+    "react",
+    "redux",
+    "mongodb"
+  ],
+  "author": "tom mulroy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tmulroy/user_accounts_spike/issues"
+  },
+  "homepage": "https://github.com/tmulroy/user_accounts_spike#readme"
+}
