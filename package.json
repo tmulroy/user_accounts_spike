@@ -4,7 +4,8 @@
   "description": "built to learn about authentication",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --inline --hot --progress --colors"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,16 @@
   },
   "homepage": "https://github.com/tmulroy/user_accounts_spike#readme",
   "dependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "webpack": "^2.3.2",
+    "webpack-dev-server": "^2.4.2"
+  },
+  "devDependencies": {
+    "why-did-you-update": "0.0.8"
   }
 }
