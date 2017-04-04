@@ -9,25 +9,8 @@ const path = require('path'),
       passport = require('passport'),
       LocalStrategy = require('passport-local').Strategy,
       session = require('express-session'),
-       webpack = require('webpack'),
-       webpackDevMiddleware = require('webpack-dev-middleware'),
-       webpackHotMiddleware = require('webpack-hot-middleware'),
-       config = require('./webpack.config'),
-       app = express(),
-       ONE_YEAR = 31536000000;
-
-compiler = webpack(config);
-
-webpackMiddle = webpackDevMiddleware(compiler, {
-  publicPath: '/js',
-  stats: {
-    chunks: false,
-    colors: true,
-  },
-});
-
-app.use(webpackMiddle);
-app.use(webpackHotMiddleware(compiler));
+      app = express(),
+      ONE_YEAR = 31536000000;
 
 
 // HSTS for Perfect Forward Secrecy
@@ -55,14 +38,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Session middleware
-// app.use(session({
-//   resave: false,
-//   saveUninitialized: false,
-//   secret: process.env.SECRET,
-//   cookie: {
-//     maxAge: process.env.COOKIE_AGE
-//   }
-// }));
+// add a session.name
+app.use(session({
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.SECRET,
+  cookie: {
+    secure: true,
+    httpOnly: true,
+    maxAge: process.env.COOKIE_AGE
+  }
+}));
 
 // Point to bundle
 app.use(express.static(path.join(__dirname, 'dist')));
@@ -74,8 +60,3 @@ app.get('/', (req, res) => {
 https.createServer(tlsOptions, app).listen(process.env.PORT, () => {
   console.log(`Secure Server on ${process.env.PORT}`);
 });
-
-// app.get('*', (req, res) => {
-//         res.status(200)
-//         res.send('hello world from secure server')
-// })
