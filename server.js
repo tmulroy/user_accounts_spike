@@ -21,10 +21,10 @@ const tlsOptions = {
         cert: fs.readFileSync(`${process.env.CERT_PATH}`),
 }
 
-// only uncomment when there's a redirect
+// only uncomment when there's a HTTP server and a redirect
 // http.createServer(app).listen(80);
 
-// HSTS for Perfect Forward Secrecy``
+// HSTS for Perfect Forward Secrecy
 app.use(helmet.hsts({
     maxAge: ONE_YEAR,
     preload: true,
@@ -52,7 +52,7 @@ https.createServer(tlsOptions, app).listen(443, () => {
   console.log(`Secure Server on 443`);
 });
 
-app.get('/hello', (req, res) => {
+app.get('*', (req, res) => {
         res.status(200)
         res.send('hello world from secure server')
 })
