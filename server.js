@@ -16,9 +16,9 @@ const app = express();
 app.use(logger('dev'));
 
 const tlsOptions = {
-        key: fs.readFileSync('./certificate/server-key.pem'),
-        ca: fs.readFileSync('./certificate/server-csr.pem'),
-        cert: fs.readFileSync('./certificate/server-cert.pem'),
+        key: fs.readFileSync(`${process.env.KEY_PATH}`),
+        ca: fs.readFileSync(`${process.env.CA_PATH}`),
+        cert: fs.readFileSync(`${process.env.CERT_PATH}`),
 }
 
 // only uncomment when there's a redirect
