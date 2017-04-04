@@ -1,17 +1,34 @@
-const https = require('https'),
+require('dotenv').config();
+const path = require('path'),
+      https = require('https'),
       express = require('express'),
       fs = require('fs'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
       passport = require('passport'),
+      LocalStrategy = require('passport-local').Strategy,
       session = require('express-session'),
-      ONE_YEAR = 31536000000;
+       webpack = require('webpack'),
+       webpackDevMiddleware = require('webpack-dev-middleware'),
+       webpackHotMiddleware = require('webpack-hot-middleware'),
+       config = require('./webpack.config'),
+       app = express(),
+       ONE_YEAR = 31536000000;
 
-// Use dotenv to access .env file
-require('dotenv').config();
+compiler = webpack(config);
 
-const app = express();
+webpackMiddle = webpackDevMiddleware(compiler, {
+  publicPath: '/js',
+  stats: {
+    chunks: false,
+    colors: true,
+  },
+});
+
+app.use(webpackMiddle);
+app.use(webpackHotMiddleware(compiler));
+
 
 // HSTS for Perfect Forward Secrecy
 app.use(helmet.hsts({
@@ -30,10 +47,10 @@ const tlsOptions = {
         cert: fs.readFileSync(`${process.env.CERT_PATH}`),
 };
 
-// only uncomment when there's a HTTP server and a redirect to HTTPS server
+// uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
 
-
+// use body-parser to
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -43,19 +60,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //   saveUninitialized: false,
 //   secret: process.env.SECRET,
 //   cookie: {
-//     maxAge: 60000
+//     maxAge: process.env.COOKIE_AGE
 //   }
 // }));
 
 // Point to bundle
-app.use(express.static('../dist/index.html'));
-
-// Start server
-https.createServer(tlsOptions, app).listen(443, () => {
-  console.log(`Secure Server on 443`);
+app.use(express.static(path.join(__dirname, 'dist')));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-app.get('*', (req, res) => {
-        res.status(200)
-        res.send('hello world from secure server')
-})
+// Start server
+https.createServer(tlsOptions, app).listen(process.env.PORT, () => {
+  console.log(`Secure Server on ${process.env.PORT}`);
+});
+
+// app.get('*', (req, res) => {
+//         res.status(200)
+//         res.send('hello world from secure server')
+// })
