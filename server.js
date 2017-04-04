@@ -8,28 +8,31 @@ const https = require('https'),
       session = require('express-session'),
       ONE_YEAR = 31536000000;
 
+// Use dotenv to access .env file
 require('dotenv').config();
 
 const app = express();
 
+// HSTS for Perfect Forward Secrecy
+app.use(helmet.hsts({
+  maxAge: ONE_YEAR,
+  preload: true,
+  force: true
+}));
+
 // logging middleware
 app.use(logger('dev'));
 
+// tls options for https server
 const tlsOptions = {
         key: fs.readFileSync(`${process.env.KEY_PATH}`),
         ca: fs.readFileSync(`${process.env.CA_PATH}`),
         cert: fs.readFileSync(`${process.env.CERT_PATH}`),
-}
+};
 
-// only uncomment when there's a HTTP server and a redirect
+// only uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
 
-// HSTS for Perfect Forward Secrecy
-app.use(helmet.hsts({
-    maxAge: ONE_YEAR,
-    preload: true,
-    force: true
-}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
