@@ -10,7 +10,12 @@ const path = require('path'),
       LocalStrategy = require('passport-local').Strategy,
       session = require('express-session'),
       app = express(),
-      ONE_YEAR = 31536000000;
+      ONE_YEAR = 31536000000,
+      tlsOptions = {
+        key: fs.readFileSync(`${process.env.KEY_PATH}`),
+        ca: fs.readFileSync(`${process.env.CA_PATH}`),
+        cert: fs.readFileSync(`${process.env.CERT_PATH}`),
+      };
 
 
 // HSTS for Perfect Forward Secrecy
@@ -20,44 +25,43 @@ app.use(helmet.hsts({
   force: true
 }));
 
+// Remove revealing info on header
+app.disable('x-powered-by');
+
 // logging middleware
 app.use(logger('dev'));
 
-// tls options for https server
-const tlsOptions = {
-        key: fs.readFileSync(`${process.env.KEY_PATH}`),
-        ca: fs.readFileSync(`${process.env.CA_PATH}`),
-        cert: fs.readFileSync(`${process.env.CERT_PATH}`),
-};
-
-// uncomment when there's a HTTP server and a redirect to HTTPS server
-// http.createServer(app).listen(80);
-
-// use body-parser to
+// use body-parser for requests
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Session middleware
 app.use(session({
+  name: 'id',
   resave: false,
   saveUninitialized: false,
   secret: process.env.SECRET,
   cookie: {
     secure: true,
     httpOnly: true,
-    maxAge: process.env.COOKIE_AGE
+    maxAge: 1800000
   }
 }));
 
 // Send static files
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// 'get /' send the index.html with bundle
+// send front end application...
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-// Start server
+// uncomment when there's a HTTP server and a redirect to HTTPS server
+// http.createServer(app).listen(80);
+app.get('/session',  (req, res) => {
+  res.send('hello from secure server')
+});
+// Start HTTPS server
 https.createServer(tlsOptions, app).listen(process.env.PORT, () => {
   console.log(`Secure Server on ${process.env.PORT}`);
 });
