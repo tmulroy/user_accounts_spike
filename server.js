@@ -38,7 +38,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Session middleware
-// add a session.name
 app.use(session({
   resave: false,
   saveUninitialized: false,
@@ -50,8 +49,10 @@ app.use(session({
   }
 }));
 
-// Point to bundle
+// Send static files
 app.use(express.static(path.join(__dirname, 'dist')));
+
+// 'get /' send the index.html with bundle
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
