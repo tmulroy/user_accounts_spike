@@ -1,8 +1,19 @@
 const passport = require('passport'),
       LocalStrategy = require('passport-local').Strategy;
+      User = require('mongoose').model('User');
 
-passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-    User.findOne({ email: email}, (err, user) => {
+module.exports = new LocalStrategy({
+  usernameField: 'email',
+  password: 'password',
+  session: true,
+  passReqToCallback: true
+}, (email, password, done) => {
+    const userData = {
+      email: email.trim(),
+      password: password.trim(),
+    }
+
+    return User.findOne({ email: userData.email }, (err, user) => {
       if (err) { return done(err); }
       if(!user) {
         return done(null, false, { message: 'Incorrect email' });
@@ -13,6 +24,11 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
       return done(null, user);
     });
   }
-));
+);
 
-// can I use function composition for this??
+
+
+// TODO: evaluate if session needs to be true
+// TODO: if I'm sanitizing untrusted data before authentication, do I really need to trim()?
+
+// IDEA: can I use function composition for this??

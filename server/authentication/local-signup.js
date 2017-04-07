@@ -1,22 +1,27 @@
 const passport = require('passport'),
-      LocalStrategy = require('passport-local').Strategy;
+      LocalStrategy = require('passport-local').Strategy,
+      User = require('mongoose').model('User');
 
-passport.use(new LocalStrategy({
+// Return the passport Local Strategy Object
+
+module.exports = new LocalStrategy({
   usernameField: 'email',
-  passwordField: 'password'
-},
-  (email, password, done) => {
-    User.findOne({ email: email}, (err, user) => {
-      if (err) { return done(err); }
-      if(!user) {
-        return done(null, false, { message: 'Incorrect email' });
-      }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password' });
-      }
-      return done(null, user);
+  passwordField: 'password',
+  session: true,
+  passReqToCallback: true
+}, (email, password, done) => {
+    const userData = {
+      email: email.trim(),
+      password: password.trim(),
+    };
+
+    const newUser = new User(userData);
+    newUser.save((err) => {
+      if (err) { return done(err) };
+      return done(null)
     });
   }
-));
+);
 
+// TODO: need to evaluate if session
 // can I use function composition for this??
