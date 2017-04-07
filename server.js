@@ -58,10 +58,15 @@ app.get('/', (req, res) => {
 
 // uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
-app.get('')
-app.get('/api',  (req, res) => {
-  res.send('hello from https api (not authenticated)')
-});
+app.post('/login',
+  passport.authenticate('local',
+    {
+      failureRedirect: '/login'
+    }),
+  (req,res) => {
+    res.redirect(`/users/${req.user.username}`)
+  });
+
 // Start HTTPS server
 https.createServer(tlsOptions, app).listen(process.env.PORT, () => {
   console.log(`Secure Server on ${process.env.PORT}`);
