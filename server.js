@@ -7,7 +7,8 @@ const path = require('path'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
       passport = require('passport'),
-      LocalStrategy = require('passport-local').Strategy,
+      localLoginStrategy = require('./server/authentication/local-login'),
+      localSignUpStrategy = require('./server/authentication/local-signup'),
       session = require('express-session'),
       app = express(),
       ONE_YEAR = 31536000000,
@@ -34,6 +35,13 @@ app.use(logger('dev'));
 // use body-parser for requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// passport middleware initialization
+app.use(passport.initialize());
+
+// tell passport to use the local authentication strategies
+passport.use('local-signup', localSignUpStrategy);
+passport.use('local-login', localLoginStrategy);
 
 // Session middleware
 app.use(session({
