@@ -16,9 +16,9 @@ const path = require('path'),
       app = express(),
       ONE_YEAR = 31536000000,
       tlsOptions = {
-        key: fs.readFileSync(`${process.env.KEY_PATH}`),
-        ca: fs.readFileSync(`${process.env.CA_PATH}`),
-        cert: fs.readFileSync(`${process.env.CERT_PATH}`),
+        key: fs.readFileSync(process.env.KEY_PATH),
+        ca: fs.readFileSync(process.env.CA_PATH),
+        cert: fs.readFileSync(process.env.CERT_PATH),
       };
 
 
@@ -76,16 +76,22 @@ passport.use('local-login', localLoginStrategy);
 // uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
 app.post('/login',
+  passport.authenticate('local'),
+  (req, res) => {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+    res.redirect('/users/' + req.user.username);
   passport.authenticate('local',
     {
       failureRedirect: '/login'
     }),
   (req,res) => {
     res.redirect(`/users/${req.user.username}`)
+  }
   });
 
 // Start HTTPS server
-https.createServer(tlsOptions, app).listen(process.env.PORT, () => {
+https.createServer(tlsOptions, app).listen(process.env.PORT,() => {
   console.log(`Secure Server on ${process.env.PORT}`);
 });
 
