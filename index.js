@@ -1,18 +1,18 @@
 require('dotenv').config();
-require('./server/models').connect(process.env.DATABASE_URL);
 
 const path = require('path'),
       https = require('https'),
       express = require('express'),
+      session = require('express-session'),
       fs = require('fs'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
-      MongoStore = require('connect-mongo')(express),
+      mongoConnection = require('./server/models'),
+      mongoStore = require('connect-mongo')(session),
       passport = require('passport'),
       localLoginStrategy = require('./server/authentication/local-login'),
       localSignUpStrategy = require('./server/authentication/local-signup'),
-      session = require('express-session'),
       app = express(),
       ONE_YEAR = 31536000000,
       tlsOptions = {
@@ -50,14 +50,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Session middleware (needs to be before passport initialization)
 app.use(session({
-  store: new MongoStore({
-    mongooseConnection: // needs a session passed in
+  store: new mongoStore({
+    mongooseConnection: mongoConnection.connect(process.env.DATABASE_URL),
     ttl:  (1 * 60 * 60)
   }),
   name: 'id',
+  secret: process.env.SECRET,
   saveUninitialized: true,
   resave: false,
-  secret: process.env.SECRET,
   cookie: {
     secure: true,
     httpOnly: true,
