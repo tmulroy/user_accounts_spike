@@ -3,13 +3,10 @@
   "version": "1.0.0",
   "description": "built to learn about authentication",
   "main": "webpack.config.js",
-  "bin": {
-  "mongo-server": "bin/mongoProcess.js"
-  },
+  "bin": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --hot --progress --colors",
-    "server": "nodemon server.js"
+    "start": "webpack --hot --progress --colors"
   },
   "repository": {
     "type": "git",
@@ -34,6 +31,7 @@
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",
     "bcrypt": "^1.0.2",
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "connect-mongo": "^1.3.2",
     "dotenv": "^4.0.0",

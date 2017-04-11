@@ -8,8 +8,8 @@ const path = require('path'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
+      MongoStore = require('connect-mongo')(express),
       passport = require('passport'),
-      mongoStoreFactory = require('connect-mongo'),
       localLoginStrategy = require('./server/authentication/local-login'),
       localSignUpStrategy = require('./server/authentication/local-signup'),
       session = require('express-session'),
@@ -48,8 +48,12 @@ app.get('/', (req, res) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Session middleware
+// Session middleware (needs to be before passport initialization)
 app.use(session({
+  store: new MongoStore({
+    mongooseConnection: // needs a session passed in
+    ttl:  (1 * 60 * 60)
+  }),
   name: 'id',
   saveUninitialized: true,
   resave: false,
@@ -72,29 +76,15 @@ passport.use('local-signup', localSignUpStrategy);
 passport.use('local-login', localLoginStrategy);
 
 
-
 // uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
-app.post('/login',
-  passport.authenticate('local'),
-  (req, res) => {
-    // If this function gets called, authentication was successful.
-    // `req.user` contains the authenticated user.
-    res.redirect('/users/' + req.user.username);
-  passport.authenticate('local',
-    {
-      failureRedirect: '/login'
-    }),
-  (req,res) => {
-    res.redirect(`/users/${req.user.username}`)
-  }
-  });
+
 
 // Start HTTPS server
 https.createServer(tlsOptions, app).listen(process.env.PORT,() => {
   console.log(`Secure Server on ${process.env.PORT}`);
 });
 
+// TODO: need to import sessionManagementConfig and pass in the app
 // TODO: passport.serializeUser()
 // TODO: passport.deserializeUser()
-// IDEA: store: sessinoStore (could be separate file representing mongo session store)
