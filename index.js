@@ -54,7 +54,7 @@ app.use(session({
   store: new mongoStore({
     mongooseConnection: mongoConnection.connect(process.env.DATABASE_URL),
     host: '127.0.0.1',
-    port: 27017
+    port: 27017,
     ttl:  (1 * 60 * 60)
   }),
   name: 'id',
