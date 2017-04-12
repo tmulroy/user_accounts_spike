@@ -1,6 +1,6 @@
 const passport = require('passport'),
-      LocalStrategy = require('passport-local').Strategy;
       User = require('mongoose').model('User');
+      LocalStrategy = require('passport-local').Strategy;
 
 module.exports = new LocalStrategy({
   usernameField: 'email',
@@ -15,16 +15,29 @@ module.exports = new LocalStrategy({
 
     return User.findOne({ email: userData.email }, (err, user) => {
       if (err) { return done(err); }
-      if(!user) {
-        return done(null, false, { message: 'Incorrect email' });
+
+      if (!user) {
+        const error = new Error('Incorrect email or password');
+        error.name = 'IncorrectCredentialsError';
+        return done(error);
       }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password' });
-      }
-      return done(null, user);
+
+      return user.comparePassword(userData.password, (passwordErr, isMatch) => {
+        if (passwordErr) { return done(passwordErr) };
+
+        if (!isMatch) {
+          const error = new Error('Incorrect email or password');
+          error.name = 'IncorrectCredentialsError';
+          return done(error);
+        }
+        const payload = {
+          sub: user._id
+        };
+        // handle tokenization here if necessary
+        // need to return done with user
+      });
     });
-  }
-);
+  });
 
 
 

@@ -1,16 +1,16 @@
 require('dotenv').config();
 
 const path = require('path'),
+      fs = require('fs'),
       https = require('https'),
       express = require('express'),
+      passport = require('passport'),
       session = require('express-session'),
-      fs = require('fs'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
       mongoConnection = require('./server/models'),
       mongoStore = require('connect-mongo')(session),
-      passport = require('passport'),
       localLoginStrategy = require('./server/authentication/local-login'),
       localSignUpStrategy = require('./server/authentication/local-signup'),
       app = express(),

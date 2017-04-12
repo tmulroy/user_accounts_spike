@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.methods.comparePassword = (password, callback) => {
-  bcrypt.compare(password, this.password, callback)
+  return bcrypt.compare(password, this.password, callback)
   // what does this.password refer to???
 }
 
