@@ -9,8 +9,7 @@ module.exports.connect = (url) => {
     process.exit(1);
   });
 
-    // require('./user')
-    require('mongoose').model('User')
+    require('./user')
 
 }
 
