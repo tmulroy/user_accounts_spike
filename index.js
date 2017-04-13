@@ -9,8 +9,6 @@ const path = require('path'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
-      mongoConnection = require('./server/models'),
-      mongoStore = require('connect-mongo')(session),
       localLoginStrategy = require('./server/authentication/local-login'),
       localSignUpStrategy = require('./server/authentication/local-signup'),
       app = express(),
@@ -51,12 +49,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Session middleware (needs to be before passport initialization)
 // or for mongostore: dbPromise: mongoosePromise (bluebird)
 app.use(session({
-  store: new mongoStore({
-    mongooseConnection: mongoConnection.connect(process.env.DATABASE_URL),
-    host: '127.0.0.1',
-    port: 27017,
-    ttl:  (1 * 60 * 60)
-  }),
   name: 'id',
   secret: process.env.SECRET,
   saveUninitialized: true,
