@@ -24,4 +24,5 @@ module.exports = new LocalStrategy({
 );
 
 // TODO: need to evaluate if session
+// TODO: add automatic login after registration.
 // can I use function composition for this??

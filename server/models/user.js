@@ -12,6 +12,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  _id: {
+    type: String
+  }
 });
 
 UserSchema.methods.comparePassword = (password, callback) => {

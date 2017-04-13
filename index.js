@@ -3,8 +3,6 @@ require('dotenv').config();
 const path = require('path'),
       fs = require('fs'),
       https = require('https'),
-      // database layer
-      // mongooseConnection = require('mongoose').connect(process.env.DATABASE_URL),
       mongooseConnection = require('./server/models/index').connect(process.env.DATABASE_URL),
       express = require('express'),
       session = require('express-session'),
@@ -70,8 +68,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // tell passport to use the local authentication strategies
-// passport.use('local-signup', localSignUpStrategy);
-// passport.use('local-login', localLoginStrategy);
+passport.use('local-login', localLoginStrategy);
+passport.use('local-signup', localSignUpStrategy);
+// TODO: passport.serializeUser() passport.deserializeUser()
+// TODO: handle api routes here
+
+// authenticate using passport (passport.authenticate) in ./authentication/index
+app.use('/api', authentication);
+app.use('/api', authRouter);
+
+
+
 
 
 // uncomment when there's a HTTP server and a redirect to HTTPS server
@@ -83,6 +90,4 @@ https.createServer(tlsOptions, app).listen(process.env.PORT,() => {
   console.log(`Secure Server on ${process.env.PORT}`);
 });
 
-// TODO: need to import sessionManagementConfig and pass in the app
-// TODO: passport.serializeUser()
-// TODO: passport.deserializeUser()
+// TODO: should have a passport configuration file that tells which strategies to use?
