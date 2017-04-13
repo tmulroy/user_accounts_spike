@@ -3,14 +3,17 @@ require('dotenv').config();
 const path = require('path'),
       fs = require('fs'),
       https = require('https'),
+      // database layer
+      models = require('./server/models/index')
+      mongoose = require('mongoose').connect(process.env.DATABASE_URL),
       express = require('express'),
-      passport = require('passport'),
       session = require('express-session'),
+      passport = require('passport'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
-      localLoginStrategy = require('./server/authentication/local-login'),
-      localSignUpStrategy = require('./server/authentication/local-signup'),
+      // localLoginStrategy = require('./server/authentication/local-login'),
+      // localSignUpStrategy = require('./server/authentication/local-signup'),
       app = express(),
       ONE_YEAR = 31536000000,
       tlsOptions = {
@@ -67,8 +70,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // tell passport to use the local authentication strategies
-passport.use('local-signup', localSignUpStrategy);
-passport.use('local-login', localLoginStrategy);
+// passport.use('local-signup', localSignUpStrategy);
+// passport.use('local-login', localLoginStrategy);
 
 
 // uncomment when there's a HTTP server and a redirect to HTTPS server
