@@ -12,6 +12,7 @@ const path = require('path'),
       logger = require('morgan'),
       localLoginStrategy = require('./server/authentication/local-login'),
       localSignUpStrategy = require('./server/authentication/local-signup'),
+      authentication = require('./server/authentication/index'),
       app = express(),
       ONE_YEAR = 31536000000,
       tlsOptions = {
