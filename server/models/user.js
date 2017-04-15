@@ -39,7 +39,7 @@ UserSchema.methods.comparePassword = (password, callback) => {
 UserSchema.pre('save', (next) => {
   const user = this,
         SALT_ROUNDS = process.env.SALT_ROUNDS;
-  if (!user.isModified('password')) { return next(); }
+  // if (!user.isModified('password')) { return next(); }
 
   return bcrypt.genSalt(SALT_ROUNDS, (err, salt) => {
     if (err) { return next(err); }

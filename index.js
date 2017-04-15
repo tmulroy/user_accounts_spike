@@ -4,14 +4,13 @@ const path = require('path'),
       fs = require('fs'),
       https = require('https'),
       mongooseConnection = require('./server/models/index').connect(process.env.DATABASE_URL),
+      User = require('mongoose').model('User'),
       express = require('express'),
       session = require('express-session'),
       passport = require('passport'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
-      localLoginStrategy = require('./server/authentication/local-login'),
-      localSignUpStrategy = require('./server/authentication/local-signup'),
       authentication = require('./server/authentication/index'),
       app = express(),
       ONE_YEAR = 31536000000,
@@ -68,15 +67,14 @@ app.use(passport.initialize());
 // tell passport to use sessions
 app.use(passport.session());
 
-// tell passport to use the local authentication strategies
-passport.use('local-login', localLoginStrategy);
-passport.use('local-signup', localSignUpStrategy);
+
+
 // TODO: passport.serializeUser() passport.deserializeUser()
 // TODO: handle api routes here
 
 // authenticate using passport (passport.authenticate) in ./authentication/index
 app.use('/api', authentication);
-app.use('/api', authRouter);
+// app.use('/api', authRouter);
 
 
 
