@@ -11,8 +11,8 @@ const path = require('path'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
-      authentication = require('./server/authentication/index'),
       app = express(),
+      authentication = require('./server/authentication/index'),
       ONE_YEAR = 31536000000,
       tlsOptions = {
         key: fs.readFileSync(process.env.KEY_PATH),
@@ -72,10 +72,11 @@ app.use(passport.session());
 // TODO: passport.serializeUser() passport.deserializeUser()
 // TODO: handle api routes here
 
-// authenticate using passport (passport.authenticate) in ./authentication/index
+// authentication
 app.use('/api', authentication);
-// app.use('/api', authRouter);
 
+// app.use('/api', authRouter);
+// app.use('/api', mainRouter)
 
 
 
