@@ -12,7 +12,7 @@ const path = require('path'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
       app = express(),
-      authentication = require('./server/authentication/index'),
+      authenticationRouter = require('./server/routers/authenticationRouter'),
       ONE_YEAR = 31536000000,
       tlsOptions = {
         key: fs.readFileSync(process.env.KEY_PATH),
