@@ -68,12 +68,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-
 // TODO: passport.serializeUser() passport.deserializeUser()
-// TODO: handle api routes here
 
 // authentication
-app.use('/api', authentication);
+app.use('/api', authenticationRouter);
 
 // app.use('/api', authRouter);
 // app.use('/api', mainRouter)
@@ -86,7 +84,7 @@ app.use('/api', authentication);
 
 
 // Start HTTPS server
-https.createServer(tlsOptions, app).listen(process.env.PORT,() => {
+const httpsServer = https.createServer(tlsOptions, app).listen(process.env.PORT,() => {
   console.log(`Secure Server on ${process.env.PORT}`);
 });
 

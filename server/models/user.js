@@ -27,10 +27,12 @@ UserSchema.methods.comparePassword = (password, callback) => {
 //
 // }
 
-  // UserSchema.methods.changePassword = (email, password) => {
-  //
-  // }
-
+// UserSchema.methods.changePassword = (email, password) => {
+//
+// }
+// UserSchema.methods.findById = (id) => {
+//
+//}
 // UserSchema.methods.generateHash = function(password) {
 //
 // }
@@ -53,7 +55,3 @@ UserSchema.pre('save', (next) => {
 });
 
 module.exports =  mongoose.model('User', UserSchema);
-
-// can use function composition for every method here...
-  // UserSchema.pre is composed of UserSchema.generateHash, etc. y = f(g(x))
-  // UserSchema.preSave(bcrypt.genSalt(bcrypt.hash))
