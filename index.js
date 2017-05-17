@@ -8,11 +8,12 @@ const path = require('path'),
       express = require('express'),
       session = require('express-session'),
       passport = require('passport'),
+      LocalStrategy = require('passport-local').Strategy,
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
       app = express(),
-      authenticationRouter = require('./server/routers/authenticationRouter'),
+      // authenticationRouter = require('./server/routers/authenticationRouter'),
       ONE_YEAR = 31536000000,
       tlsOptions = {
         key: fs.readFileSync(process.env.KEY_PATH),
@@ -67,11 +68,22 @@ app.use(passport.initialize());
 // tell passport to use sessions
 app.use(passport.session());
 
+passport.use(new LocalStrategy((username, password, done) => {
+  console.log('inside passport localstrategy ')
+  console.log(`local done ${done}`)
+  return done(null, false, {message: 'unable to register'})
+}))
 
+app.post('/api/register',
+  passport.authenticate('local', { failWithError: true }),
+  (req, res) => {
+    console.log(`authenticate req ${info}`)
+  }
+)
 // TODO: passport.serializeUser() passport.deserializeUser()
 
 // authentication
-app.use('/api', authenticationRouter);
+// app.use('/api', authenticationRouter);
 
 // app.use('/api', authRouter);
 // app.use('/api', mainRouter)
