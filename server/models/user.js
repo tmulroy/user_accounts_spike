@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
       bcrypt = require('bcrypt');
+require('dotenv').config()
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -39,15 +40,15 @@ UserSchema.methods.comparePassword = (password, callback) => {
 
 // can just call .generateHash from UserSchema.preSave-**maybe not, wouldn't be a pure function (side-effects)
 UserSchema.pre('save', (next) => {
-  const user = this,
-        SALT_ROUNDS = process.env.SALT_ROUNDS;
+  const user = this
+  console.log('user', user)
   // if (!user.isModified('password')) { return next(); }
-
-  return bcrypt.genSalt(SALT_ROUNDS, (err, salt) => {
+  return bcrypt.genSalt(10, (err, salt) => {
     if (err) { return next(err); }
-
-    return bcrypt.hash(user.password, salt, null, (err, hash) => {
+    console.log('salt is', salt)
+    return bcrypt.hash(user.password, salt, (err, hash) => {
       if (err) { return next(err); }
+      console.log('has', hash)
       user.password = hash;
       return next();
     });

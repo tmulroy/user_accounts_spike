@@ -68,10 +68,21 @@ app.use(passport.initialize());
 // tell passport to use sessions
 app.use(passport.session());
 
-passport.use(new LocalStrategy((username, password, done) => {
+passport.use(new LocalStrategy({
+  usernameField: 'email'
+  },
+  (email, password, done) => {
   console.log('inside passport localstrategy ')
-  console.log(`local done ${done}`)
-  return done(null, false, {message: 'unable to register'})
+  const userData = {
+    email: email.trim(),
+    password: password.trim(),
+  }
+  const newUser = new User(userData);
+  newUser.save((err) => {
+    if (err) { return done(err) };
+    return done(user)
+  })
+  // return done(null, false, {message: 'unable to register'})
 }))
 
 app.post('/api/register',
@@ -84,7 +95,6 @@ app.post('/api/register',
 
 // authentication
 // app.use('/api', authenticationRouter);
-
 // app.use('/api', authRouter);
 // app.use('/api', mainRouter)
 
