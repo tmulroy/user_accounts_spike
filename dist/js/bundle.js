@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1a283260adc4dd3e5e31"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3d4439a95bcbc9ceed68"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -11594,17 +11594,25 @@ var RegisterForm = function (_PureComponent) {
   }
 
   _createClass(RegisterForm, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "form",
+        'form',
         null,
-        _react2.default.createElement("input", { type: "email", placeholder: "Enter email" }),
-        _react2.default.createElement("input", {
-          type: "password",
-          pattern: ".{6,}"
+        _react2.default.createElement(
+          'h1',
+          null,
+          'Register'
+        ),
+        _react2.default.createElement('input', { type: 'text', placeholder: 'First Name' }),
+        _react2.default.createElement('input', { type: 'text', placeholder: 'Last Name' }),
+        _react2.default.createElement('input', { type: 'email', placeholder: 'Enter email' }),
+        _react2.default.createElement('input', {
+          type: 'password',
+          pattern: '.{6,}',
+          placeholder: 'Password 6 characters minimum'
         }),
-        _react2.default.createElement("input", { type: "submit" })
+        _react2.default.createElement('input', { type: 'submit' })
       );
     }
   }]);

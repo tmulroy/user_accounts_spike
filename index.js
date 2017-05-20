@@ -3,8 +3,9 @@ require('dotenv').config();
 const path = require('path'),
       fs = require('fs'),
       https = require('https'),
-      mongooseConnection = require('./server/models/index').connect(process.env.DATABASE_URL),
-      User = require('mongoose').model('User'),
+      mongoose = require('mongoose'),
+      User = require('./server/models/user'),
+      errorhandler = require('errorhandler'),
       express = require('express'),
       session = require('express-session'),
       passport = require('passport'),
@@ -13,7 +14,7 @@ const path = require('path'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
       app = express(),
-      // authenticationRouter = require('./server/routers/authenticationRouter'),
+      indexRouter = require('./server/routers/index'),
       ONE_YEAR = 31536000000,
       tlsOptions = {
         key: fs.readFileSync(process.env.KEY_PATH),
@@ -21,6 +22,14 @@ const path = require('path'),
         cert: fs.readFileSync(process.env.CERT_PATH),
       };
 
+// Mongoose connection
+mongoose.Promise = require('bluebird');
+mongoose.connect(process.env.DATABASE_URL)
+const db = mongoose.connection
+db.on('error', console.error.bind(console, 'mongo connection error'))
+db.once('open', () => {
+  console.log('connection ok')
+})
 
 // HSTS for Perfect Forward Secrecy
 app.use(helmet.hsts({
@@ -35,6 +44,10 @@ app.disable('x-powered-by');
 // logging middleware
 app.use(logger('dev'));
 
+// development error middleware
+if (process.env.NODE_ENV === 'development') {
+  app.use(errorhandler())
+}
 
 // Send static files
 app.use(express.static(path.join(__dirname, 'dist')));
@@ -68,42 +81,54 @@ app.use(passport.initialize());
 // tell passport to use sessions
 app.use(passport.session());
 
-passport.use(new LocalStrategy({
-  usernameField: 'email'
-  },
-  (email, password, done) => {
-  console.log('inside passport localstrategy ')
-  const userData = {
-    email: email.trim(),
-    password: password.trim(),
-  }
-  const newUser = new User(userData);
-  newUser.save((err) => {
-    if (err) { return done(err) };
-    return done(user)
-  })
-  // return done(null, false, {message: 'unable to register'})
-}))
+// passport.use(new LocalStrategy({
+//   usernameField: 'email'
+//   },
+//   (email, password, next) => {
+//   console.log('inside passport localstrategy ')
+//   console.log(`email to register: ${email}`)
+//   console.log(`password to register: ${password}`)
+//
+//   const userData = {
+//     email: email.trim(),
+//     password: password.trim(),
+//   }
+//
+//   User.findOne({ 'email': 'thomasjohnmulroy@gmail.com'},
+//     (err, user) => {
+//
+//       if (err) return next(err)
+//       if (!user) {
+//
+//         const newUser = new User(userData)
+//         newUser.save((err, newUser) => {
+//           if (err) return console.error(err)
+//           next(user)
+//         })
+//
+//       }
+//
+//     })
+//
+// }))
 
-app.post('/api/register',
-  passport.authenticate('local', { failWithError: true }),
-  (req, res) => {
-    console.log(`authenticate req ${info}`)
-  }
-)
-// TODO: passport.serializeUser() passport.deserializeUser()
-
-// authentication
-// app.use('/api', authenticationRouter);
-// app.use('/api', authRouter);
-// app.use('/api', mainRouter)
+passport.use(new LocalStrategy({usernameField: 'email'},User.authenticate()))
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 
 
+
+// app.post('/api/register',
+//   passport.authenticate('local', { failWithError: true }),
+//   (req, res) => {
+//     console.log(`authenticate req ${req}`)
+//     console.log(`res ${res}`)
+//   }
+// )
 
 // uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
-
 
 // Start HTTPS server
 const httpsServer = https.createServer(tlsOptions, app).listen(process.env.PORT,() => {
