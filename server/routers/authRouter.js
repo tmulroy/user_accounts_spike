@@ -2,6 +2,7 @@ const User = require('../models/user')
 const authRouter = require('express').Router()
 const passport = require('passport')
 
+// REGISTRATION
 authRouter.post('/register', (req, res, next) => {
   console.log(`registering user`)
   User.register(new User({
@@ -19,6 +20,7 @@ authRouter.post('/register', (req, res, next) => {
   )
 })
 
+// LOGIN AUTHENTICATION
 authRouter.post('/login', passport.authenticate('local'), (req, res) => {
   console.log(`req.user${req.user}`)
   res.send(`login successfull!`)

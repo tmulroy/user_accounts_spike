@@ -3,18 +3,18 @@ require('dotenv').config();
 const path = require('path'),
       fs = require('fs'),
       https = require('https'),
+      crypto = require('crypto'),
+      uuid = require('node-uuid'),
       mongoose = require('mongoose'),
       User = require('./server/models/user'),
       errorhandler = require('errorhandler'),
       express = require('express'),
       session = require('express-session'),
-      passport = require('passport'),
-      LocalStrategy = require('passport-local').Strategy,
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
       app = express(),
-      indexRouter = require('./server/routers/index'),
+      indexRouter = require('./server/routers/routes'),
       ONE_YEAR = 31536000000,
       tlsOptions = {
         key: fs.readFileSync(process.env.KEY_PATH),
@@ -41,12 +41,12 @@ app.use(helmet.hsts({
 // Remove revealing info on header
 app.disable('x-powered-by');
 
-// logging middleware
-app.use(logger('dev'));
-
-// development error middleware
+// development-only middleware
 if (process.env.NODE_ENV === 'development') {
+  // error handler middleware
   app.use(errorhandler())
+  // logging middleware
+  app.use(logger('dev'));
 }
 
 // Send static files
@@ -61,10 +61,10 @@ app.get('/', (req, res) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Session middleware (needs to be before passport initialization)
 // or for mongostore: dbPromise: mongoosePromise (bluebird)
 app.use(session({
   name: 'id',
+  genid: (req) => {return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")},
   secret: process.env.SECRET,
   saveUninitialized: true,
   resave: false,
@@ -75,57 +75,9 @@ app.use(session({
   }
 }));
 
-// passport middleware initialization
-app.use(passport.initialize());
 
-// tell passport to use sessions
-app.use(passport.session());
-
-// passport.use(new LocalStrategy({
-//   usernameField: 'email'
-//   },
-//   (email, password, next) => {
-//   console.log('inside passport localstrategy ')
-//   console.log(`email to register: ${email}`)
-//   console.log(`password to register: ${password}`)
-//
-//   const userData = {
-//     email: email.trim(),
-//     password: password.trim(),
-//   }
-//
-//   User.findOne({ 'email': 'thomasjohnmulroy@gmail.com'},
-//     (err, user) => {
-//
-//       if (err) return next(err)
-//       if (!user) {
-//
-//         const newUser = new User(userData)
-//         newUser.save((err, newUser) => {
-//           if (err) return console.error(err)
-//           next(user)
-//         })
-//
-//       }
-//
-//     })
-//
-// }))
-
-passport.use(new LocalStrategy({usernameField: 'email'},User.authenticate()))
-passport.serializeUser(User.serializeUser())
-passport.deserializeUser(User.deserializeUser())
-
-
-
-
-// app.post('/api/register',
-//   passport.authenticate('local', { failWithError: true }),
-//   (req, res) => {
-//     console.log(`authenticate req ${req}`)
-//     console.log(`res ${res}`)
-//   }
-// )
+// handle requests with index router
+app.use('/api', indexRouter)
 
 // uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
@@ -134,5 +86,3 @@ passport.deserializeUser(User.deserializeUser())
 const httpsServer = https.createServer(tlsOptions, app).listen(process.env.PORT,() => {
   console.log(`Secure Server on ${process.env.PORT}`);
 });
-
-// TODO: should have a passport configuration file that tells which strategies to use?
