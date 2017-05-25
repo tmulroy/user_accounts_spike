@@ -43,6 +43,7 @@ export default class RegisterForm extends Component {
   submitForm(e) {
     e.preventDefault()
     request.post('https://localhost:8080/api/register')
+      .withCredentials()
       .send({ email: this.state.email, password: this.state.password})
       .end((err, res) => {
         console.log(`response from server ${JSON.stringify(res)}`)

@@ -10,6 +10,7 @@ const path = require('path'),
       errorhandler = require('errorhandler'),
       express = require('express'),
       session = require('express-session'),
+      MongoStore = require('connect-mongo')(session),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
@@ -63,11 +64,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // or for mongostore: dbPromise: mongoosePromise (bluebird)
 app.use(session({
-  name: 'id',
-  genid: (req) => {return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")},
+  name: 'uid',
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  // genid: (req) => {return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")},
   secret: process.env.SECRET,
-  saveUninitialized: true,
-  resave: false,
+  saveUninitialized: false,
+  resave: true,
   cookie: {
     secure: true,
     httpOnly: true,

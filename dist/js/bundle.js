@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7c508f7c5ea4de60dd6f"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "47e2eaf0003414c4207e"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotMainModule = true; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -18360,7 +18360,7 @@ var RegisterForm = function (_Component) {
     key: 'submitForm',
     value: function submitForm(e) {
       e.preventDefault();
-      request.post('https://localhost:8080/api/register').send({ email: this.state.email, password: this.state.password }).end(function (err, res) {
+      request.post('https://localhost:8080/api/register').withCredentials().send({ email: this.state.email, password: this.state.password }).end(function (err, res) {
         console.log('response from server ' + JSON.stringify(res));
       });
     }
