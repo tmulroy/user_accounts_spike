@@ -21,10 +21,7 @@ router.post('/register', (req, res, next) => {
           lastname: req.body.lastname
         })
 
-        // fb3d5bef792b40d9681c32dce0541a92393c96ee98c90c1c4db69734c49f1739
-        // fb3d5bef792b40d9681c32dce0541a92393c96ee98c90c1c4db69734c49f1739
-        // 59278c99a1801a6f2a11751a
-        // 59278c99a1801a6f2a11751a
+  
         // browser cookie
 
         // res.cookie()
