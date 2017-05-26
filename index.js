@@ -64,12 +64,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // or for mongostore: dbPromise: mongoosePromise (bluebird)
 app.use(session({
-  name: 'uid',
+  name: 'id',
   store: new MongoStore({ mongooseConnection: mongoose.connection }),
-  // genid: (req) => {return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")},
+  genid: (req) => {return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")},
   secret: process.env.SECRET,
-  saveUninitialized: false,
-  resave: true,
+  saveUninitialized: true,
+  resave: false,
   cookie: {
     secure: true,
     httpOnly: true,

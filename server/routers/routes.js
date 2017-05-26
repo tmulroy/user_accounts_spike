@@ -20,12 +20,17 @@ router.post('/register', (req, res, next) => {
           firstname: req.body.firstname,
           lastname: req.body.lastname
         })
-        // s%3AefNNtCpEylw2SprD7fnOGZeEfvXgLjeZ.IbpFJ11b29Vg7w3iDfZxh259fYRxVbazBJe3JVa1grY
-        // s%3A_ZAgWcYVx0IyY_yeTaOXcu1C30QN4EOG.ZNx0QYFQORKJU7cPD9s9d3Yb0HuBzWoSHEzGtPdmAso
-        // s%3A-n27Y4NANaOvD0XYSIlv_ygXpHFx0L68.gn%2FBVqC2RHSy57bBR2rkt4Yt%2FX8CKaf5jQ9YftHVp4s
-        req.session.username = newUser.email
+
+        // fb3d5bef792b40d9681c32dce0541a92393c96ee98c90c1c4db69734c49f1739
+        // fb3d5bef792b40d9681c32dce0541a92393c96ee98c90c1c4db69734c49f1739
+        // 59278c99a1801a6f2a11751a
+        // 59278c99a1801a6f2a11751a
+        // browser cookie
+
+        // res.cookie()
         newUser.save()
         console.log(`req.session.id ${req.session.id}`)
+        console.log(`new user id ${newUser._id}`)
         res.end()
         // res.json({text: 'user registered'})
       })
