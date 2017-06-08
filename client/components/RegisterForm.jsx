@@ -41,6 +41,7 @@ export default class RegisterForm extends Component {
   }
 
   submitForm(e) {
+    // NOTE: need to get cookie.id and use that on request...
     e.preventDefault()
     request.post('https://localhost:8080/api/register')
       .withCredentials()

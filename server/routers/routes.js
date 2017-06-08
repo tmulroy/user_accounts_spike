@@ -1,8 +1,10 @@
 
 const router = require('express').Router()
 const User = require('../models/user')
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const bcrypt = require('bcrypt')
+const saltRounds = 10
+const crypto = require('crypto')
+const uuid = require('node-uuid')
 
 // REGISTRATION
 router.post('/register', (req, res, next) => {
@@ -13,39 +15,48 @@ router.post('/register', (req, res, next) => {
       bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
         if (err) {
           console.log(`hash error: ${err}`)
+          // res.json({error: 'error registering'})
         }
         const newUser = new User({
           email: req.body.email,
           password: hash,
           firstname: req.body.firstname,
-          lastname: req.body.lastname
+          lastname: req.body.lastname,
+          sessionId: req.session.id
         })
-
-  
-        // browser cookie
-
-        // res.cookie()
+        res.cookie('id', crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex"), {
+          secure: true,
+          httpOnly: true,
+          maxAge: 1800000
+        })
         newUser.save()
-        console.log(`req.session.id ${req.session.id}`)
-        console.log(`new user id ${newUser._id}`)
-        res.end()
-        // res.json({text: 'user registered'})
+        // should check for cookie, if none, then reset?
+        res.json({text: 'registered'})
+        next()
       })
-
-      // console.log(`userData: ${userData}`)
     }
   })
-  // should generate new user and then link req.sessionID to newUser.id in new mongo collection
-  //User findbyEmail
-  // if error, return error
-  // else create new User
-  // log user in
 })
 
-// LOGIN AUTHENTICATION
-// router.post('/login', passport.authenticate('local'), (req, res) => {
-//   res.send(`login successfull!`)
-// })
+// LOGIN
+router.post('/login', (req, res, next) => {
+  console.log('req.body', req.body)
+  User.findOne({email: req.body.email}, (err, user) => {
+    if (err) return next()
+    if (!user) return res.json({text: 'user doesnt exist'})
+    // need to compare passwordString
+    console.log('user exists', user)
+
+    res.cookie('id', crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex"), {
+      secure: true,
+      httpOnly: true,
+      maxAge: 1800000
+    })
+    res.json({text: 'loggedin'})
+    next()
+  })
+})
+
 
 // router.get('/users/:userid', auth, )
 

@@ -14,7 +14,7 @@ export default class App extends PureComponent {
   render() {
     return (
       <div>
-        <RegisterForm />
+        {/* <RegisterForm /> */}
         <LoginForm />
       </div>
     )
