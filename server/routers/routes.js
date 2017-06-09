@@ -46,12 +46,15 @@ router.post('/login', (req, res, next) => {
     if (!user) return res.json({text: 'user doesnt exist'})
     // need to compare passwordString
     console.log('user exists', user)
-
-    res.cookie('id', crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex"), {
+    let newSessionID = crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")
+    res.cookie('id', newSessionID, {
       secure: true,
       httpOnly: true,
       maxAge: 1800000
     })
+    user.sessionId = newSessionID
+    user.save()
+    console.log('updated user', user)
     res.json({text: 'loggedin'})
     next()
   })
@@ -59,5 +62,5 @@ router.post('/login', (req, res, next) => {
 
 
 // router.get('/users/:userid', auth, )
-
+// NOTE: should change login and register route to UserController methods
 module.exports = router
