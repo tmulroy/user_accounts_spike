@@ -15,7 +15,8 @@ const path = require('path'),
       cookieParser = require('cookie-parser'),
       logger = require('morgan'),
       app = express(),
-      indexRouter = require('./server/routers/routes'),
+      authRouter = require('./server/routers/authRouter'),
+      authentication = require('./server/middleware/authentication'),
       ONE_YEAR = 31536000000,
       tlsOptions = {
         key: fs.readFileSync(process.env.KEY_PATH),
@@ -71,8 +72,8 @@ app.use(session({
   }
 }));
 
-// handle requests with index router
-app.use('/api', indexRouter)
+app.use('/api', authentication)
+app.use('/api', authRouter)
 
 // uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);

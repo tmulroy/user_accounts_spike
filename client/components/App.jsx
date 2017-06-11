@@ -1,22 +1,25 @@
-import React, { PureComponent, PropTypes } from 'react';
-import RegisterForm from './RegisterForm.jsx';
+import React, { Component } from 'react'
+import cookie from 'react-cookie'
+import RegisterForm from './RegisterForm.jsx'
 import LoginForm from './LoginForm.jsx'
+import { NavLink } from 'react-router-dom'
+// if (process.env.NODE_ENV !== 'production') {
+//   const {whyDidYouUpdate} = require('why-did-you-update')
+//   whyDidYouUpdate(React)
+// };
 
-if (process.env.NODE_ENV !== 'production') {
-  const {whyDidYouUpdate} = require('why-did-you-update')
-  whyDidYouUpdate(React)
-};
 
-
-
-export default class App extends PureComponent {
+export default class App extends Component {
 
   render() {
     return (
-      <div>
-        {/* <RegisterForm /> */}
-        <LoginForm />
-      </div>
+        <div>
+            <ul>
+              <li><NavLink to="/register">Register</NavLink></li>
+              <li><NavLink to="/login">Login</NavLink></li>
+            </ul>
+            {this.props.children}
+        </div>
     )
   };
 };

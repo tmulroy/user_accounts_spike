@@ -49,11 +49,9 @@ export default class LoginForm extends PureComponent {
       })
   }
   render() {
-    console.log(`LoginForm state ${JSON.stringify(this.state)}`)
     return (
-      <div>
-        <h1>Login</h1>
         <form onSubmit={this.submitForm} onChange={this.handleChange}>
+          <h1>Login</h1>
           <input
             name="email"
             type="email"
@@ -69,7 +67,6 @@ export default class LoginForm extends PureComponent {
           /><br />
           <input type="submit" />
         </form>
-      </div>
     )
   }
 }

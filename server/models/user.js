@@ -25,7 +25,9 @@ const UserSchema = new mongoose.Schema({
   sessionId: {
     type: String,
     required: true
-  }
+  },
+  role: [String],
+  shoppingCartId: String
 })
 
 

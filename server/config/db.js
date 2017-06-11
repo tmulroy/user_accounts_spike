@@ -7,6 +7,7 @@ db.on('error', console.error.bind(console, 'mongo connection error'))
 db.once('open', () => {
   console.log('connection ok')
   // console.log(`db.collections.find`)
+  // require('../models/user')
 })
 
 module.exports = db

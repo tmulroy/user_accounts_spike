@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App.jsx';
+// import App from './components/App.jsx';
+import Router from './components/Router.jsx'
 
-
-ReactDOM.render(<App />, document.querySelector('#root'));
+ReactDOM.render(<Router />, document.querySelector('#root'));
