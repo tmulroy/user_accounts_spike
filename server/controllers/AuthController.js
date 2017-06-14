@@ -4,8 +4,11 @@ const crypto = require('crypto')
 const uuid = require('node-uuid')
 const saltRounds = 10
 
+// NOTE: need to add a /logout route which clears the cookie
+
 class AuthController {
   static login(req, res) {
+    // NOTE: do I need to update req.session and/or req.cookie res.cookie?
     const { email, password } = req.body
     User.findOne({ email }, (err, user) => {
       if (err || !user) {
@@ -16,14 +19,6 @@ class AuthController {
           if (err || !validPassword) {
             res.status(401).end()
           } else {
-            let newSessionID = crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")
-            res.cookie('id', newSessionID, {
-              secure: true,
-              httpOnly: true,
-              maxAge: 1800000
-            })
-            user.sessionId = newSessionID
-            user.save()
             res.status(200).end()
           }
         })
@@ -53,12 +48,14 @@ class AuthController {
               lastname: req.body.lastname,
               sessionId: req.session.id
             })
-            res.cookie('id', crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex"), {
-              secure: true,
-              httpOnly: true,
-              maxAge: 1800000
-            })
+            // res.cookie('uid', crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex"), {
+            //   secure: true,
+            //   httpOnly: true,
+            //   maxAge: 1800000
+            // })
             newUser.save()
+            req.session.uid = newUser._id
+            req.session.save((err) => {if (err) {console.log('err', err)}})
             // should check for cookie, if none, then reset?
             res.status(200).end()
           }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import cookie from 'react-cookie'
 import RegisterForm from './RegisterForm.jsx'
 import LoginForm from './LoginForm.jsx'
 import { NavLink } from 'react-router-dom'

@@ -12,7 +12,7 @@ const path = require('path'),
       MongoStore = require('connect-mongo')(session),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
-      cookieParser = require('cookie-parser'),
+      // cookieParser = require('cookie-parser'),
       logger = require('morgan'),
       app = express(),
       authRouter = require('./server/routers/authRouter'),
@@ -55,13 +55,13 @@ app.get('/', (req, res) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cookieParser());
+// app.use(cookieParser());
 
 // or for mongostore: dbPromise: mongoosePromise (bluebird)
+// genid: (req) => {return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")},
 app.use(session({
   name: 'id',
   store: new MongoStore({ mongooseConnection: db }),
-  genid: (req) => {return crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest("hex")},
   secret: process.env.SECRET,
   saveUninitialized: true,
   resave: false,
@@ -74,6 +74,7 @@ app.use(session({
 
 app.use('/api', authentication)
 app.use('/api', authRouter)
+app.use('/api/users/', userController)
 
 // uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
