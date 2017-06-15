@@ -10,8 +10,14 @@ function authenticate(req, res, next) {
   // console.log('req.session.id', req.session.id)
   // console.log('req.headers.cookie', req.headers.cookie)
   const nonRestrictedRoutes = ['/login', '/register', '/logout']
+  const adminRoutes = ['/products', '/users']
 
   if (nonRestrictedRoutes.includes(req.path)) { return next() }
+
+  if (adminRoutes.includes(req.path)) {
+    console.log('req.path', req.path)
+    console.log('req.session.id', req.session.id)
+  }
 
   const sessionId = req.session.id
   // console.log('sessionId', sessionId)

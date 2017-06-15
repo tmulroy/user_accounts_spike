@@ -13,6 +13,7 @@ const path = require('path'),
       helmet = require('helmet'),
       bodyParser = require('body-parser'),
       // cookieParser = require('cookie-parser'),
+      productRouter = require('./server/routers/productRouter'),
       logger = require('morgan'),
       app = express(),
       authRouter = require('./server/routers/authRouter'),
@@ -74,7 +75,7 @@ app.use(session({
 
 app.use('/api', authentication)
 app.use('/api', authRouter)
-app.use('/api/users/', userController)
+app.use('/api/products/', productRouter)
 
 // uncomment when there's a HTTP server and a redirect to HTTPS server
 // http.createServer(app).listen(80);
